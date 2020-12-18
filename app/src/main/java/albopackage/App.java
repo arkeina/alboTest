@@ -3,7 +3,7 @@
  */
 package albopackage;
 
-//Importe de librerias nativas de java
+//Importe de librerias de java
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.concurrent.TimeUnit;
 //Importe de librerias de org
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -145,9 +146,10 @@ public class App {
     /**
      * Funcion principal que se ejecuta al correr el gradlew run
      */
-    public static void main(String[] args) throws MalformedURLException, IOException {
+    public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException {
         //System.out.println(new App().getGreeting());
         new App().callIronManCreators();
+        TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
     }
 }
