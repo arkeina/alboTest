@@ -23,8 +23,12 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
 	
-	// This dependency is used by the application for JSONs.
-	implementation 'org.json:json:20171018'
+    // This dependency is used by the application for JSONs.
+    implementation 'org.json:json:20171018'
+
+    // This dependency is used by the application for Database Conecction.
+    implementation "mysql:mysql-connector-java:6.0.6"
+    
 }
 
 application {

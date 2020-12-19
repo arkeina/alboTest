@@ -1,3 +1,5 @@
+package albopackage;
+
 /*
 String wsURL = "https://gateway.marvel.com/v1/public/characters?nameStartsWith=iron%20man&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1";
  */

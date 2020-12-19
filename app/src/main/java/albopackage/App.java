@@ -25,6 +25,16 @@ import java.nio.charset.Charset;
 import org.json.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+//Importe de librerias de coneccion BD y manejo de resultsets
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 
 public class App {
     
@@ -143,14 +153,26 @@ public class App {
         return false;
     }
     
+    private static Connection _conn;
+
+    // init
+    public static void aMySQLConnection(String url, String user, String pass) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        _conn = DriverManager.getConnection(url, user, pass);
+        System.out.println("Database connection established.");
+    }
+    
     /**
      * Funcion principal que se ejecuta al correr el gradlew run
      */
-    public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException {
+    public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, SQLException, ClassNotFoundException{
         //System.out.println(new App().getGreeting());
+        
         new App().callIronManCreators();
         TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
+        
+        new App().aMySQLConnection("127.0.0.1", "root", "");
     }
 }
 //int ironmanID = 1009368;
