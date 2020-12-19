@@ -10,15 +10,17 @@ import java.util.ArrayList;
 
 public class MySQLConnection {
 
-    private Connection _conn;
+    private static Connection conn;
 
     // init
-    MySQLConnection(String url, String user, String pass) throws SQLException, ClassNotFoundException {
+    public static void MySQLConnection(String url, String user, String pass) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        this._conn = DriverManager.getConnection(url, user, pass);
+        conn = DriverManager.getConnection(url, user, pass);
         System.out.println("Database connection established.");
     }
-
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
+    }
     /*
     public void getDrugsClaims() throws SQLException {
         String query = "select * from drugs";

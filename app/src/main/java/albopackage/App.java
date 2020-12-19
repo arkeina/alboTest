@@ -153,12 +153,12 @@ public class App {
         return false;
     }
     
-    private static Connection _conn;
+    private static Connection conn;
 
     // init
     public static void aMySQLConnection(String url, String user, String pass) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        _conn = DriverManager.getConnection(url, user, pass);
+        conn = DriverManager.getConnection(url, user, pass);
         System.out.println("Database connection established.");
     }
     
@@ -171,8 +171,8 @@ public class App {
         new App().callIronManCreators();
         TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
-        
-        new App().aMySQLConnection("127.0.0.1", "root", "");
+        //MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
+        new App().aMySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
     }
 }
 //int ironmanID = 1009368;
