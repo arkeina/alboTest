@@ -101,7 +101,9 @@ public class App {
             System.out.println("Nombre: " + creatorsArr.getJSONObject(i).getString("name"));
             System.out.println("Rol   : " + creatorsArr.getJSONObject(i).getString("role"));
         }
-        callCharactersFromComic(String.valueOf(arr.getJSONObject(0).getInt("id")));
+        otherHerosClear("1");
+        callCharactersFromComic(String.valueOf(arr.getJSONObject(0).getInt("id")), "1");
+        lastSyncUpdate("1");
         System.out.println("----------");
         return false;
     }
@@ -143,7 +145,9 @@ public class App {
             System.out.println("Rol   : " + creatorsArr.getJSONObject(i).getString("role"));
             //System.out.println(arr.getJSONObject(0).getInt("id") + "\n");
         }
-        callCharactersFromComic(String.valueOf(arr.getJSONObject(0).getInt("id")));
+        otherHerosClear("2");
+        callCharactersFromComic(String.valueOf(arr.getJSONObject(0).getInt("id")), "2");
+        lastSyncUpdate("2");
         System.out.println("----------");
         return false;
     }
@@ -152,9 +156,9 @@ public class App {
      * Funcion de llamado a ENDPOINT que regresa el JSON con los personajes por
      * el ID de comic
      *
-     * @parameters String comicNo
+     * @param String comicNo
      */
-    public static boolean callCharactersFromComic(String comicNo) throws MalformedURLException, IOException {
+    public static boolean callCharactersFromComic(String comicNo, String id_hero_related) throws MalformedURLException, IOException, SQLException {
         JSONObject jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
         System.out.println("----------");
         JSONArray arr = jsonIM.getJSONObject("data").getJSONArray("results");
@@ -163,6 +167,12 @@ public class App {
             System.out.println("Heroe : " + arr.getJSONObject(i).getString("name"));
             JSONArray charactersArr = arr.getJSONObject(0).getJSONObject("comics").getJSONArray("items");
             System.out.println("Rol   : " + charactersArr.getJSONObject(i).getString("name"));
+            try {
+                otherHerosUpdate(arr.getJSONObject(i).getString("name"), charactersArr.getJSONObject(i).getString("name"), id_hero_related);
+            } catch (SQLException w) {
+                System.out.println("Error:");
+                System.out.println(w);
+            }
         }
         System.out.println("----------");
         return false;
@@ -173,6 +183,7 @@ public class App {
     /**
      * Funcion principal para la conexion a la base de datos requiere los
      * parametros de conexion MySQL
+     *
      * @param String url
      * @param String user
      * @param String pass
@@ -194,7 +205,7 @@ public class App {
         ResultSetMetaData rsmd = rs.getMetaData();
 
         int columnsNumber = rsmd.getColumnCount();
-        while (rs.next()) {     
+        while (rs.next()) {
             for (int i = 1; i <= columnsNumber; i++) {
                 System.out.print(rs.getString(i) + " ");
             }
@@ -203,16 +214,17 @@ public class App {
     }
 
     /**
-     * Funcion que consulta la base de datos para obtener la tabla de creadores de ambos heroes
+     * Funcion que consulta la base de datos para obtener la tabla de creadores
+     * de ambos heroes
      */
     public void getHerosDataCreators() throws SQLException {
         String query = "SELECT * FROM  marvel_repo_db.creators;";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(query);
         ResultSetMetaData rsmd = rs.getMetaData();
-        
+
         int columnsNumber = rsmd.getColumnCount();
-        while (rs.next()) {     
+        while (rs.next()) {
             for (int i = 1; i <= columnsNumber; i++) {
                 System.out.print(rs.getString(i) + " ");
             }
@@ -221,8 +233,30 @@ public class App {
     }
 
     /**
-     * Funcion que borra a todos los creadores de la tabla de creadores por el heroe relacionado que se recibe como parametro puede ser 1 IronMan 2 CapAmerica
-     * @param String hero_rel 
+     * Funcion que consulta la base de datos para obtener la tabla de creadores
+     * de ambos heroes
+     */
+    public void getHerosDataOtherHeros() throws SQLException {
+        String query = "SELECT * FROM  marvel_repo_db.other_heros;";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        ResultSetMetaData rsmd = rs.getMetaData();
+
+        int columnsNumber = rsmd.getColumnCount();
+        while (rs.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                System.out.print(rs.getString(i) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Funcion que borra a todos los creadores de la tabla de creadores por el
+     * heroe relacionado que se recibe como parametro puede ser 1 IronMan 2
+     * CapAmerica
+     *
+     * @param String hero_rel
      */
     public static void heroClearCreators(String hero_rel) throws SQLException {
         String query = "DELETE FROM marvel_repo_db.creators WHERE id_hero_rel = '" + hero_rel + "';";
@@ -231,7 +265,9 @@ public class App {
     }
 
     /**
-     * Funcion que recibe parametros de nombre, rol, y heroe relacionado para insertar en la tabla de creadores.
+     * Funcion que recibe parametros de nombre, rol, y heroe relacionado para
+     * insertar en la tabla de creadores.
+     *
      * @param String name
      * @param String rol
      * @param String id_hero_rel
@@ -243,7 +279,48 @@ public class App {
     }
 
     /**
-     * Funcion principal que se ejecuta al correr el gradlew run
+     * Funcion que borra a todos los heroes realcionados de la tabla de
+     * other_heros por id del heroe relacionado que se recibe como parametro
+     * puede ser 1-IronMan, 2-CapAmerica
+     *
+     * @param String hero_rel
+     */
+    public static void otherHerosClear(String hero_rel) throws SQLException {
+        String query = "DELETE FROM marvel_repo_db.other_heros WHERE id_hero_related = '" + hero_rel + "';";
+        Statement st = conn.createStatement();
+        st.executeUpdate(query);
+    }
+
+    /**
+     * Funcion que recibe parametros de nombre del heroe que sale junto con el
+     * principal, el nombre de comic donde aparece, y heroe relacionado para
+     * insertar en la tabla de otros heroes.
+     *
+     * @param String other_hero
+     * @param String comic_name
+     * @param String id_hero_rel
+     */
+    public static void otherHerosUpdate(String other_hero, String comic_name, String id_hero_rel) throws SQLException {
+        String query = "INSERT INTO marvel_repo_db.other_heros (`name`,`comic`,`id_hero_related`) VALUES ('" + other_hero + "','" + comic_name + "','" + id_hero_rel + "');";
+        Statement st = conn.createStatement();
+        st.executeUpdate(query);
+    }
+
+    /**
+     * Funcion que actualiza la ultima sincronizacion de los datos por el id de
+     * heroe
+     *
+     * @param String id_hero
+     */
+    public static void lastSyncUpdate(String id_hero) throws SQLException {
+        String query = "UPDATE `marvel_repo_db`.`heros` SET `last_sync` = current_timestamp() WHERE `id_hero` = '" + id_hero + "';";
+        Statement st = conn.createStatement();
+        st.executeUpdate(query);
+    }
+
+    /**
+     * Funcion principal que se ejecuta al correr el gradlew run, manda a llamar
+     * a todos los metodos internos de la clase para ejecucion de los mismos
      */
     public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, SQLException, ClassNotFoundException {
         //System.out.println(new App().getGreeting());
@@ -253,9 +330,13 @@ public class App {
         new App().callCapAmericaCreators();
         //MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().getHerosData();
+        System.out.println("");
         new App().getHerosDataCreators();
+        System.out.println("");
+        new App().getHerosDataOtherHeros();
     }
 }
+
 //int ironmanID = 1009368;
 //int capamericaID = 1009220;
 //ID de comic en que sale = 7332
