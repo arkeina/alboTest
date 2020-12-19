@@ -325,8 +325,11 @@ public class App {
     public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, SQLException, ClassNotFoundException {
         //System.out.println(new App().getGreeting());
         new App().aMySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
+        new App().getHerosData();
+        System.out.println("");
+        
         new App().callIronManCreators();
-        TimeUnit.SECONDS.sleep(1);
+        //TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
         //MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().getHerosData();
@@ -334,6 +337,8 @@ public class App {
         new App().getHerosDataCreators();
         System.out.println("");
         new App().getHerosDataOtherHeros();
+        System.out.println("");
+        conn.close();
     }
 }
 
