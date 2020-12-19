@@ -5,18 +5,12 @@ package albopackage;
 
 //Importe de librerias de java
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.io.InputStreamReader;
-import java.net.URLConnection;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 //Importe de librerias de org
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 //Importe de librerias de entrada de datos de java
 import java.io.InputStream;
 import java.io.Reader;
@@ -26,27 +20,26 @@ import org.json.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 //Importe de librerias de coneccion BD y manejo de resultsets
-import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-
 public class App {
-    
+
     /**
      * Funcion generada por el gradle de manera original
      */
     public String getGreeting() {
         return "Hello World!";
     }
-    
+
     /**
-     * Funcion de llamada para construir el JSON mediante la lectura del texto de la URL y el Buffered Reader
+     * Funcion de llamada para construir el JSON mediante la lectura del texto
+     * de la URL y el Buffered Reader
+     *
      * @param Reader rd
      */
     private static String readAll(Reader rd) throws IOException {
@@ -57,9 +50,11 @@ public class App {
         }
         return sb.toString();
     }
-    
+
     /**
-     * Funcion de llamado a para leer un JSON desde una URL lo convierte en JSONObject para manejo
+     * Funcion de llamado a para leer un JSON desde una URL lo convierte en
+     * JSONObject para manejo
+     *
      * @param String url
      */
     public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
@@ -75,14 +70,14 @@ public class App {
     }
 
     /**
-     * Funcion de llamado a ENDPOINT que regresa el JSON con los creadores por el ID de Iron Man ID 1009368
+     * Funcion de llamado a ENDPOINT que regresa el JSON con los creadores por
+     * el ID de Iron Man ID 1009368
      */
-    public static boolean callIronManCreators() throws MalformedURLException, IOException {
+    public static boolean callIronManCreators() throws MalformedURLException, IOException, SQLException {
         //Se obtiene la respuesta JSON de la url para los datos
         JSONObject jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/characters/1009368/comics?orderBy=-modified&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1&limit=1");
         //ENDPOINT que da el id del HEROE = https://gateway.marvel.com/v1/public/characters?nameStartsWith=iron%20man&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1
         //ID iron man = 1009368
-        //int loopComicsIM = jsonIM.getJSONObject("data").getInt("total");
         System.out.println("----------");
         System.out.println("ID iron man = 1009368");
         JSONArray arr = jsonIM.getJSONObject("data").getJSONArray("results");
@@ -90,22 +85,32 @@ public class App {
         System.out.println("----------");
         JSONArray creatorsArr = arr.getJSONObject(0).getJSONObject("creators").getJSONArray("items");
         System.out.println("Creadores");
-        //for (int i = 0; i < arr.length(); i++) {
+        try {
+            heroClearCreators("1");
+        } catch (SQLException w) {
+            System.out.println("Error:");
+            System.out.println(w);
+        }
         for (int i = 0; i < creatorsArr.length(); i++) {
-            //System.out.println(arr.getJSONObject(i).getString("name"));
-            //System.out.println(arr.getJSONObject(i).getInt("id") + "\n");
+            try {
+                heroUpdateCreators(creatorsArr.getJSONObject(i).getString("name"), creatorsArr.getJSONObject(i).getString("role"), "1");
+            } catch (SQLException w) {
+                System.out.println("Error:");
+                System.out.println(w);
+            }
             System.out.println("Nombre: " + creatorsArr.getJSONObject(i).getString("name"));
             System.out.println("Rol   : " + creatorsArr.getJSONObject(i).getString("role"));
         }
-        callCharactersFromComic( String.valueOf( arr.getJSONObject(0).getInt("id") ) );
+        callCharactersFromComic(String.valueOf(arr.getJSONObject(0).getInt("id")));
         System.out.println("----------");
         return false;
     }
 
     /**
-     * Funcion de llamado a ENDPOINT que regresa el JSON con los creadores por el ID de capitan America ID 1009220
+     * Funcion de llamado a ENDPOINT que regresa el JSON con los creadores por
+     * el ID de capitan America ID 1009220
      */
-    public static boolean callCapAmericaCreators() throws MalformedURLException, IOException {
+    public static boolean callCapAmericaCreators() throws MalformedURLException, IOException, SQLException {
         //Se obtiene la respuesta JSON de la url para los datos
         JSONObject jsonCap = readJsonFromUrl("https://gateway.marvel.com/v1/public/characters/1009220/comics?orderBy=-modified&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1&limit=1");
         //ENDPOINT que da el id del HEROE = https://gateway.marvel.com/v1/public/characters?nameStartsWith=Captain%20America&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1
@@ -121,30 +126,40 @@ public class App {
         System.out.println("----------");
         JSONArray creatorsArr = arr.getJSONObject(0).getJSONObject("creators").getJSONArray("items");
         System.out.println("Creadores");
+        try {
+            heroClearCreators("2");
+        } catch (SQLException w) {
+            System.out.println("Error:");
+            System.out.println(w);
+        }
         for (int i = 0; i < creatorsArr.length(); i++) {
+            try {
+                heroUpdateCreators(creatorsArr.getJSONObject(i).getString("name"), creatorsArr.getJSONObject(i).getString("role"), "2");
+            } catch (SQLException w) {
+                System.out.println("Error:");
+                System.out.println(w);
+            }
             System.out.println("Nombre: " + creatorsArr.getJSONObject(i).getString("name"));
             System.out.println("Rol   : " + creatorsArr.getJSONObject(i).getString("role"));
             //System.out.println(arr.getJSONObject(0).getInt("id") + "\n");
         }
-        callCharactersFromComic( String.valueOf( arr.getJSONObject(0).getInt("id") ) );
+        callCharactersFromComic(String.valueOf(arr.getJSONObject(0).getInt("id")));
         System.out.println("----------");
         return false;
     }
-    
+
     /**
-     * Funcion de llamado a ENDPOINT que regresa el JSON con los personajes por el ID de comic
+     * Funcion de llamado a ENDPOINT que regresa el JSON con los personajes por
+     * el ID de comic
+     *
      * @parameters String comicNo
      */
     public static boolean callCharactersFromComic(String comicNo) throws MalformedURLException, IOException {
         JSONObject jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
         System.out.println("----------");
         JSONArray arr = jsonIM.getJSONObject("data").getJSONArray("results");
-        //JSONArray creatorsArr = arr.getJSONObject(0).getJSONObject("creators").getJSONArray("items");
         System.out.println("Characters in comic " + comicNo);
-        //for (int i = 0; i < arr.length(); i++) {
         for (int i = 0; i < arr.length(); i++) {
-            //System.out.println(arr.getJSONObject(i).getString("name"));
-            //System.out.println(arr.getJSONObject(i).getInt("id") + "\n");
             System.out.println("Heroe : " + arr.getJSONObject(i).getString("name"));
             JSONArray charactersArr = arr.getJSONObject(0).getJSONObject("comics").getJSONArray("items");
             System.out.println("Rol   : " + charactersArr.getJSONObject(i).getString("name"));
@@ -152,21 +167,25 @@ public class App {
         System.out.println("----------");
         return false;
     }
-    
+
     private static Connection conn;
 
     /**
-     * Funcion principal para la conexion a la base de datos requiere los parametros de conexion MySQL
-     * @param String url, String user, String pass
+     * Funcion principal para la conexion a la base de datos requiere los
+     * parametros de conexion MySQL
+     * @param String url
+     * @param String user
+     * @param String pass
      */
     public static void aMySQLConnection(String url, String user, String pass) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         conn = DriverManager.getConnection(url, user, pass);
         System.out.println("Database connection established.");
     }
-    
+
     /**
-     * Funcion que consulta la base de datos para obtener los detalles de id de marvel y id de comic
+     * Funcion que consulta la base de datos para obtener los detalles de id de
+     * marvel y id de comic
      */
     public void getHerosData() throws SQLException {
         String query = "SELECT * FROM  marvel_repo_db.heros;";
@@ -175,27 +194,66 @@ public class App {
         ResultSetMetaData rsmd = rs.getMetaData();
 
         int columnsNumber = rsmd.getColumnCount();
-        while (rs.next()) {
-            //Print one row          
-            for(int i = 1 ; i <= columnsNumber; i++){
-                  System.out.print(rs.getString(i) + " ");
+        while (rs.next()) {     
+            for (int i = 1; i <= columnsNumber; i++) {
+                System.out.print(rs.getString(i) + " ");
             }
-            System.out.println();        
+            System.out.println();
         }
     }
-    
+
+    /**
+     * Funcion que consulta la base de datos para obtener la tabla de creadores de ambos heroes
+     */
+    public void getHerosDataCreators() throws SQLException {
+        String query = "SELECT * FROM  marvel_repo_db.creators;";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        ResultSetMetaData rsmd = rs.getMetaData();
+        
+        int columnsNumber = rsmd.getColumnCount();
+        while (rs.next()) {     
+            for (int i = 1; i <= columnsNumber; i++) {
+                System.out.print(rs.getString(i) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Funcion que borra a todos los creadores de la tabla de creadores por el heroe relacionado que se recibe como parametro puede ser 1 IronMan 2 CapAmerica
+     * @param String hero_rel 
+     */
+    public static void heroClearCreators(String hero_rel) throws SQLException {
+        String query = "DELETE FROM marvel_repo_db.creators WHERE id_hero_rel = '" + hero_rel + "';";
+        Statement st = conn.createStatement();
+        st.executeUpdate(query);
+    }
+
+    /**
+     * Funcion que recibe parametros de nombre, rol, y heroe relacionado para insertar en la tabla de creadores.
+     * @param String name
+     * @param String rol
+     * @param String id_hero_rel
+     */
+    public static void heroUpdateCreators(String name, String rol, String id_hero_rel) throws SQLException {
+        String query = "INSERT INTO marvel_repo_db.creators (`name`,`rol`,`id_hero_rel`) VALUES ('" + name + "', '" + rol + "', '" + id_hero_rel + "');";
+        Statement st = conn.createStatement();
+        st.executeUpdate(query);
+    }
+
     /**
      * Funcion principal que se ejecuta al correr el gradlew run
      */
-    public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, SQLException, ClassNotFoundException{
+    public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, SQLException, ClassNotFoundException {
         //System.out.println(new App().getGreeting());
-        
+        new App().aMySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().callIronManCreators();
         TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
         //MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
-        new App().aMySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().getHerosData();
+        new App().getHerosDataCreators();
     }
 }
 //int ironmanID = 1009368;
