@@ -162,6 +162,22 @@ public class App {
         System.out.println("Database connection established.");
     }
     
+    public void getHerosData() throws SQLException {
+        String query = "SELECT * FROM  marvel_repo_db.heros;";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        ResultSetMetaData rsmd = rs.getMetaData();
+
+        int columnsNumber = rsmd.getColumnCount();
+        while (rs.next()) {
+            //Print one row          
+            for(int i = 1 ; i <= columnsNumber; i++){
+                  System.out.print(rs.getString(i) + " ");
+            }
+            System.out.println();        
+        }
+        //return;
+    }
     /**
      * Funcion principal que se ejecuta al correr el gradlew run
      */
@@ -173,6 +189,7 @@ public class App {
         new App().callCapAmericaCreators();
         //MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().aMySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
+        new App().getHerosData();
     }
 }
 //int ironmanID = 1009368;
