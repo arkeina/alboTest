@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-12-2020 a las 21:22:08
+-- Tiempo de generación: 19-12-2020 a las 22:15:46
 -- Versión del servidor: 10.4.17-MariaDB
 -- Versión de PHP: 8.0.0
 
@@ -39,14 +39,14 @@ CREATE TABLE `creators` (
 --
 
 INSERT INTO `creators` (`id_creator`, `name`, `rol`, `id_hero_rel`) VALUES
-(37, 'Dick Ayers', 'inker', '1'),
-(38, 'Jack Kirby', 'penciler', '1'),
-(39, 'Stan Lee', 'writer', '1'),
-(40, 'Sam Rosen', 'letterer', '1'),
-(41, 'Dick Ayers', 'inker', '2'),
-(42, 'Jack Kirby', 'penciler', '2'),
-(43, 'Stan Lee', 'writer', '2'),
-(44, 'Sam Rosen', 'letterer', '2');
+(69, 'Dick Ayers', 'inker', '1'),
+(70, 'Jack Kirby', 'penciler', '1'),
+(71, 'Stan Lee', 'writer', '1'),
+(72, 'Sam Rosen', 'letterer', '1'),
+(73, 'Dick Ayers', 'inker', '2'),
+(74, 'Jack Kirby', 'penciler', '2'),
+(75, 'Stan Lee', 'writer', '2'),
+(76, 'Sam Rosen', 'letterer', '2');
 
 -- --------------------------------------------------------
 
@@ -67,8 +67,8 @@ CREATE TABLE `heros` (
 --
 
 INSERT INTO `heros` (`id_hero`, `name`, `marvel_id`, `marvel_comic_id`, `last_sync`) VALUES
-(1, 'Iron Man', '1009368', '7332', '2020-12-19 20:21:26'),
-(2, 'Capitan America', '1009220', '7332', '2020-12-19 20:21:28');
+(1, 'Iron Man', '1009368', '7332', '2020-12-19 20:27:15'),
+(2, 'Capitan America', '1009220', '7332', '2020-12-19 20:27:16');
 
 -- --------------------------------------------------------
 
@@ -88,20 +88,20 @@ CREATE TABLE `other_heros` (
 --
 
 INSERT INTO `other_heros` (`id_other_hero`, `name`, `comic`, `id_hero_related`) VALUES
-(17, 'Avengers', 'Absolute Carnage: Avengers (2019) #1', '1'),
-(18, 'Captain America', 'Acts of Vengeance: Avengers (Trade Paperback)', '1'),
-(19, 'Hank Pym', 'Age of Apocalypse (2011) #2 (Avengers Art Appreciation Variant)', '1'),
-(20, 'Iron Man', 'Age of Heroes (2010) #1', '1'),
-(21, 'Kang', 'Age of Heroes (2010) #2', '1'),
-(22, 'Thor', 'Age of Heroes (2010) #3', '1'),
-(23, 'Wasp', 'Age of Heroes (2010) #4', '1'),
-(24, 'Avengers', 'Absolute Carnage: Avengers (2019) #1', '2'),
-(25, 'Captain America', 'Acts of Vengeance: Avengers (Trade Paperback)', '2'),
-(26, 'Hank Pym', 'Age of Apocalypse (2011) #2 (Avengers Art Appreciation Variant)', '2'),
-(27, 'Iron Man', 'Age of Heroes (2010) #1', '2'),
-(28, 'Kang', 'Age of Heroes (2010) #2', '2'),
-(29, 'Thor', 'Age of Heroes (2010) #3', '2'),
-(30, 'Wasp', 'Age of Heroes (2010) #4', '2');
+(73, 'Avengers', 'Absolute Carnage: Avengers (2019) #1', '1'),
+(74, 'Captain America', 'Acts of Vengeance: Avengers (Trade Paperback)', '1'),
+(75, 'Hank Pym', 'Age of Apocalypse (2011) #2 (Avengers Art Appreciation Variant)', '1'),
+(76, 'Iron Man', 'Age of Heroes (2010) #1', '1'),
+(77, 'Kang', 'Age of Heroes (2010) #2', '1'),
+(78, 'Thor', 'Age of Heroes (2010) #3', '1'),
+(79, 'Wasp', 'Age of Heroes (2010) #4', '1'),
+(80, 'Avengers', 'Absolute Carnage: Avengers (2019) #1', '2'),
+(81, 'Captain America', 'Acts of Vengeance: Avengers (Trade Paperback)', '2'),
+(82, 'Hank Pym', 'Age of Apocalypse (2011) #2 (Avengers Art Appreciation Variant)', '2'),
+(83, 'Iron Man', 'Age of Heroes (2010) #1', '2'),
+(84, 'Kang', 'Age of Heroes (2010) #2', '2'),
+(85, 'Thor', 'Age of Heroes (2010) #3', '2'),
+(86, 'Wasp', 'Age of Heroes (2010) #4', '2');
 
 --
 -- Índices para tablas volcadas
@@ -133,7 +133,7 @@ ALTER TABLE `other_heros`
 -- AUTO_INCREMENT de la tabla `creators`
 --
 ALTER TABLE `creators`
-  MODIFY `id_creator` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_creator` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT de la tabla `heros`
@@ -145,7 +145,7 @@ ALTER TABLE `heros`
 -- AUTO_INCREMENT de la tabla `other_heros`
 --
 ALTER TABLE `other_heros`
-  MODIFY `id_other_hero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_other_hero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
