@@ -327,7 +327,6 @@ public class App {
         new App().aMySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().getHerosData();
         System.out.println("");
-        
         new App().callIronManCreators();
         //TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
