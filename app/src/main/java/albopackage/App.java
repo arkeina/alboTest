@@ -155,13 +155,19 @@ public class App {
     
     private static Connection conn;
 
-    // init
+    /**
+     * Funcion principal para la conexion a la base de datos requiere los parametros de conexion MySQL
+     * @param String url, String user, String pass
+     */
     public static void aMySQLConnection(String url, String user, String pass) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         conn = DriverManager.getConnection(url, user, pass);
         System.out.println("Database connection established.");
     }
     
+    /**
+     * Funcion que consulta la base de datos para obtener los detalles de id de marvel y id de comic
+     */
     public void getHerosData() throws SQLException {
         String query = "SELECT * FROM  marvel_repo_db.heros;";
         Statement st = conn.createStatement();
@@ -178,6 +184,7 @@ public class App {
         }
         //return;
     }
+    
     /**
      * Funcion principal que se ejecuta al correr el gradlew run
      */
