@@ -114,7 +114,8 @@ public class App {
             lastSyncUpdate("1");
             System.out.println("----------");
         } catch (NullPointerException npex) {
-            System.out.println("Error por apuntador nulo");
+            System.out.println("Error por apuntador nulo en callIronManCreators");
+            return;
         }
         //return false;
     }
@@ -168,7 +169,8 @@ public class App {
             lastSyncUpdate("2");
             System.out.println("----------");
         } catch (NullPointerException npex) {
-            System.out.println("Error por apuntador nulo");
+            System.out.println("Error por apuntador nulo en callCapAmericaCreators");
+            return;
         }
     }
 
@@ -178,8 +180,16 @@ public class App {
      *
      * @param String comicNo
      */
-    public static boolean callCharactersFromComic(String comicNo, String id_hero_related) throws MalformedURLException, IOException, SQLException {
-        JSONObject jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
+    public static void callCharactersFromComic(String comicNo, String id_hero_related) throws MalformedURLException, IOException, SQLException {
+        JSONObject jsonIM = null;
+        try{
+            jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
+        } catch (IOException ioex) {
+            System.out.println("Error en la lectura de la API de MARVEL");
+            return;
+        }
+        //JSONObject jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
+        try{
         System.out.println("----------");
         JSONArray arr = jsonIM.getJSONObject("data").getJSONArray("results");
         System.out.println("Characters in comic " + comicNo);
@@ -195,7 +205,11 @@ public class App {
             }
         }
         System.out.println("----------");
-        return false;
+        }catch( NullPointerException npex){
+            System.out.println("Error por apuntador nulo en metodo de callCharactersFromComic");
+            return;
+        }
+        //return false;
     }
 
     private static Connection conn;
@@ -350,13 +364,11 @@ public class App {
             System.out.println("Error en la conexion a la base de datos de MySQL");
             return;
         }
-
+        //Llamado de los metodos para obtener informacion
         new App().getHerosData();
         System.out.println("");
         new App().callIronManCreators();
-        //TimeUnit.SECONDS.sleep(1);
         new App().callCapAmericaCreators();
-        //MySQLConnection("jdbc:mysql://127.0.0.1", "root", "");
         new App().getHerosData();
         System.out.println("");
         new App().getHerosDataCreators();
@@ -366,16 +378,3 @@ public class App {
         conn.close();
     }
 }
-
-//int ironmanID = 1009368;
-//int capamericaID = 1009220;
-//ID de comic en que sale = 7332
-/*
-JSONArray charactersArr = arr.getJSONObject(0).getJSONObject("characters").getJSONArray("items");
-System.out.println("Heroes con los que sale");
-for (int i = 0; i < creatorsArr.length(); i++) {
-System.out.println("Nombre: " + creatorsArr.getJSONObject(i).getString("name"));
-System.out.println("Rol   : " + creatorsArr.getJSONObject(i).getString("role"));
-//System.out.println(arr.getJSONObject(0).getInt("id") + "\n");
-}
-/**/
