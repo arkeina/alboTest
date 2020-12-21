@@ -182,30 +182,30 @@ public class App {
      */
     public static void callCharactersFromComic(String comicNo, String id_hero_related) throws MalformedURLException, IOException, SQLException {
         JSONObject jsonIM = null;
-        try{
+        try {
             jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
         } catch (IOException ioex) {
             System.out.println("Error en la lectura de la API de MARVEL");
             return;
         }
         //JSONObject jsonIM = readJsonFromUrl("https://gateway.marvel.com/v1/public/comics/" + comicNo + "/characters?orderBy=name&apikey=ac50fd1d19c4f4e2727b3444951a8573&hash=fab68ac6420bf936b28e040b1d24d9bd&ts=1");
-        try{
-        System.out.println("----------");
-        JSONArray arr = jsonIM.getJSONObject("data").getJSONArray("results");
-        System.out.println("Characters in comic " + comicNo);
-        for (int i = 0; i < arr.length(); i++) {
-            System.out.println("Heroe : " + arr.getJSONObject(i).getString("name"));
-            JSONArray charactersArr = arr.getJSONObject(0).getJSONObject("comics").getJSONArray("items");
-            System.out.println("Rol   : " + charactersArr.getJSONObject(i).getString("name"));
-            try {
-                otherHerosUpdate(arr.getJSONObject(i).getString("name"), charactersArr.getJSONObject(i).getString("name"), id_hero_related);
-            } catch (SQLException w) {
-                System.out.println("Error:");
-                System.out.println(w);
+        try {
+            System.out.println("----------");
+            JSONArray arr = jsonIM.getJSONObject("data").getJSONArray("results");
+            System.out.println("Characters in comic " + comicNo);
+            for (int i = 0; i < arr.length(); i++) {
+                System.out.println("Heroe : " + arr.getJSONObject(i).getString("name"));
+                JSONArray charactersArr = arr.getJSONObject(0).getJSONObject("comics").getJSONArray("items");
+                System.out.println("Rol   : " + charactersArr.getJSONObject(i).getString("name"));
+                try {
+                    otherHerosUpdate(arr.getJSONObject(i).getString("name"), charactersArr.getJSONObject(i).getString("name"), id_hero_related);
+                } catch (SQLException w) {
+                    System.out.println("Error:");
+                    System.out.println(w);
+                }
             }
-        }
-        System.out.println("----------");
-        }catch( NullPointerException npex){
+            System.out.println("----------");
+        } catch (NullPointerException npex) {
             System.out.println("Error por apuntador nulo en metodo de callCharactersFromComic");
             return;
         }
